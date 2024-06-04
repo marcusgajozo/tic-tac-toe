@@ -1,3 +1,5 @@
+import random
+
 class TicTacToeBoard:
     def __init__(self):
         self.board = [" " for _ in range(9)]
@@ -21,7 +23,9 @@ class TicTacToeGame:
     def available_moves(self):
         return [i for i, spot in enumerate(self.board.board) if spot == " "]
 
-    def empty_squares(self):
+    def continue_game(self):
+        if (self.current_winner != None):
+            return False
         return " " in self.board.board
 
     def check_winner(self, square, letter):
@@ -64,34 +68,59 @@ class TicTacToeGame:
             return True
         return False
 
-
 class TicTacToePlay:
-    def __init__(self, game, x_player, o_player):
-        self.game = game
-        self.x_player = x_player
-        self.o_player = o_player
+    def __init__(self):
+        self.game = TicTacToeGame()
+        self.x_player = HumanPlayer("X")
+        self.o_player = None
+
+    def _menu_start(self):
+        print("Welcome to Tic Tac Toe!")
+        print("1. Play a game alone")
+        print("2. Play a game in pairs")
+        print("3. Exit")
+        choice = input("Enter your choice: ")
+        if(choice == "1"):    
+            self.o_player = RandomComputerPlayer("O")
+            return True
+        elif(choice == "2"):
+            self.o_player = HumanPlayer("O")
+            return True
+        else:
+            print("Goodbye!")
+        return False
+    
+    def _menu_reset():          
+        print("Want to play again?")
+        print("1. Yes")
+        print("2. No")
+        choice = input("Enter your choice: ")
+        if(choice == "1"):
+            return True
+        return False 
 
     def play_game(self, letter="X"):
-        self.game.board.print_board()
+        start = self._menu_start()
+        while start:
+            self.game.board.print_board()
+            while self.game.continue_game():
+                if letter == "O":
+                    square = self.o_player.get_move(self.game)
+                else:
+                    square = self.x_player.get_move(self.game)
+                if self.game.make_move(square, letter):
+                    print(letter + f" makes a move to square {square}")
+                    self.game.board.print_board()
+                    print("")
+                    if self.game.current_winner:
+                        print(letter + " wins!")
+                    letter = "O" if letter == "X" else "X"
+            print("It's a tie!")
+            print("--------------------")
+            start = self._menu_reset()
+        print("Goodbye!")
+        
 
-        while self.game.empty_squares():
-            if letter == "O":
-                square = self.o_player.get_move(self.game)
-            else:
-                square = self.x_player.get_move(self.game)
-
-            if self.game.make_move(square, letter):
-                print(letter + f" makes a move to square {square}")
-                self.game.board.print_board()
-                print("")
-
-                if self.game.current_winner:
-                    print(letter + " wins!")
-                    return letter
-
-                letter = "O" if letter == "X" else "X"
-
-        print("It's a tie!")
 
 
 class Player:
@@ -120,10 +149,15 @@ class HumanPlayer(Player):
                 print("Invalid square. Try again.")
         return val
 
+class RandomComputerPlayer(Player):
+    def __init__(self, letter):
+        super().__init__(letter)
+
+    def get_move(self, game):
+        square = random.choice(game.available_moves())
+        return square
+
 
 if __name__ == "__main__":
-    game = TicTacToeGame()
-    x_player = HumanPlayer("X")
-    o_player = HumanPlayer("O")
-    game_controller = TicTacToePlay(game, x_player, o_player)
-    game_controller.play_game()
+    tic_tac_toe = TicTacToePlay()
+    tic_tac_toe.play_game()
