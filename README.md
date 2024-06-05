@@ -4,7 +4,7 @@
 ### Relatório de Análise do Sistema Tic Tac Toe
 
 ### Estrutura Atual:
-O sistema “Tic Tac Toe” consiste em 3 classes: “TicTacToe”, “Player” e “HumanPlayer”. Um método chamado play é responsável por chamar e executar em um laço de repetição que faz com que o jogo permaneça rodando enquanto não tem vencedor ou empate.
+O sistema “Tic Tac Toe” consiste em 3 classes: “TicTacToe”, “Player” e “HumanPlayer”. Uma função chamada play é responsável por chamar e executar em um laço de repetição que faz com que o jogo permaneça rodando enquanto não tem vencedor ou empate.
 
 **Classe TicTacToe:** Responsável por manter o estado do jogo, incluindo o tabuleiro atual e o acompanhamento do vencedor. Métodos para imprimir o tabuleiro, obter movimentos disponíveis, verificar se há espaços vazios, contar espaços vazios, fazer movimentos e verificar se há um vencedor.
 
