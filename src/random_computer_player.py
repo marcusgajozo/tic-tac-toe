@@ -10,6 +10,6 @@ class RandomComputerPlayer(Player):
 
     def get_move(self, game):
         square = random.choice(game.available_moves())
-        print("loading...")
+        print("CPU playing...")
         time.sleep(2)
         return square
