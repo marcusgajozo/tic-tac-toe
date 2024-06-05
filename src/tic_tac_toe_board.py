@@ -12,9 +12,6 @@ class TicTacToeBoard:
             return True
         return False
 
-    def reset_board(self):
-        self._board = [" " for _ in range(9)]
-
     def empty_space(self):
         return [i for i, spot in enumerate(self._board) if spot == " "]
 
