@@ -30,15 +30,16 @@ class TicTacToeGame:
         self._scoreboard = {"O": 0, "X": 0}
 
     def available_moves(self):
-        return [i for i, spot in enumerate(self.board.get_board()) if spot == " "]
+        return [i for i, spot in enumerate(self._board.get_board()) if spot == " "]
 
-    def reset_winner(self):
+    def reset_game(self):
+        self._board.reset_board()
         self._current_winner = ""
 
     def continue_game(self):
         if self._current_winner:
             return False
-        return " " in self.board.get_board()
+        return " " in self._board.get_board()
 
     def get_scoreboard(self):
         return self._scoreboard
@@ -58,32 +59,35 @@ class TicTacToeGame:
             return True
         return False
 
+    def print_board(self):
+        self._board.print_board()
+
     def _check_row(self, square, letter):
         row_index = square // 3
-        row = self.board.get_board()[row_index * 3 : (row_index + 1) * 3]
+        row = self._board.get_board()[row_index * 3 : (row_index + 1) * 3]
         if all([spot == letter for spot in row]):
             return True
         return False
 
     def _check_column(self, square, letter):
         col_index = square % 3
-        column = [self.board.get_board()[col_index + i * 3] for i in range(3)]
+        column = [self._board.get_board()[col_index + i * 3] for i in range(3)]
         if all([spot == letter for spot in column]):
             return True
         return False
 
     def _check_diagonals(self, square, letter):
         if square % 2 == 0:
-            diagonal1 = [self.board.get_board()[i] for i in [0, 4, 8]]
+            diagonal1 = [self._board.get_board()[i] for i in [0, 4, 8]]
             if all([spot == letter for spot in diagonal1]):
                 return True
-            diagonal2 = [self.board.get_board()[i] for i in [2, 4, 6]]
+            diagonal2 = [self._board.get_board()[i] for i in [2, 4, 6]]
             if all([spot == letter for spot in diagonal2]):
                 return True
         return False
 
     def make_move(self, square, letter):
-        if self.board.make_move(square, letter):
+        if self._board.make_move(square, letter):
             if self._check_winner(square, letter):
                 self._current_winner = letter
             return True
@@ -118,32 +122,32 @@ class TicTacToePlay:
 
     def _choose_opponent(self, option):
         if option == "1":
-            self.opponent = RandomComputerPlayer("O")
+            self._opponent = RandomComputerPlayer("O")
         else:
-            self.opponent = HumanPlayer("O")
+            self._opponent = HumanPlayer("O")
 
     def _play_turn(self, player_symbol):
         square = (
-            self.human_player.get_move(self._game)
+            self._human_player.get_move(self._game)
             if player_symbol == "X"
-            else self.opponent.get_move(self._game)
+            else self._opponent.get_move(self._game)
         )
         if self._game.make_move(square, player_symbol):
             print("----------------")
             print(f"{player_symbol} makes a move to square {square}")
-            self._game.board.print_board()
+            self._game.print_board()
 
     def _show_result(self):
         print()
-        if self._game.current_winner:
-            print(self._game.current_winner + " wins!")
+        if self._game.get_current_winner():
+            print(self._game.get_current_winner() + " wins!")
         else:
             print("It's a tie!")
 
     def _show_scoreboard(self):
         print("--------------------")
-        for i in self._game.scoreboard:
-            print(f"{i}: {self._game.scoreboard[i]}")
+        for i in self._game.get_scoreboard():
+            print(f"{i}: {self._game.get_scoreboard()[i]}")
         print("--------------------")
 
     def play_game(self):
@@ -157,13 +161,12 @@ class TicTacToePlay:
 
         while option == "1" or option == "2":
             self._choose_opponent(option)
-            self._game.reset_winner()
-            self._game.board.reset()
-            self._game.board.print_board()
+            self._game.reset_game()
+            self._game.print_board()
 
             while self._game.continue_game():
-                self._play_turn(self.letter)
-                self.letter = "O" if self.letter == "X" else "X"
+                self._play_turn(self._letter)
+                self._letter = "O" if self._letter == "X" else "X"
 
             self._show_result()
 
